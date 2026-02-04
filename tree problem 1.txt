@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Employee {
+    char designation[20];
+    struct Employee* left;
+    struct Employee* right;
+};
+
+struct Employee* createEmployee(const char* name) {
+    struct Employee* emp = (struct Employee*)malloc(sizeof(struct Employee));
+    strcpy(emp->designation, name);
+    emp->left = NULL;
+    emp->right = NULL;
+    return emp;
+}
+
+int main() {
+    struct Employee* CEO = createEmployee("CEO");
+    struct Employee* Manager1 = createEmployee("Manager1");
+    struct Employee* Manager2 = createEmployee("Manager2");
+    struct Employee* TeamLead1 = createEmployee("TeamLead1");
+    struct Employee* TeamLead2 = createEmployee("TeamLead2");
+
+    CEO->left = Manager1;
+    CEO->right = Manager2;
+
+    Manager1->left = TeamLead1;
+    Manager1->right = TeamLead2;
+
+    printf("CEO: %s\n", CEO->designation);
+    printf("Left Manager: %s\n", CEO->left->designation);
+    printf("Right team lead under manager1: %s\n",
+           CEO->left->right->designation);
+
+    /* Free memory */
+    free(TeamLead1);
+    free(TeamLead2);
+    free(Manager1);
+    free(Manager2);
+    free(CEO);
+
+    return 0;
+}
