@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX 100
+
+// Queue for BFS
+int queue[MAX];
+int front = -1, rear = -1;
+void enqueue(int data) {
+    if (rear == MAX - 1)
+        return;
+    if (front == -1)
+        front = 0;
+    queue[++rear] = data;
+}
+int dequeue() {
+    if (front == -1)
+        return -1;
+    int data = queue[front];
+    if (front == rear)
+        front = rear = -1;
+    else
+        front++;
+    return data;
+}
+
+// BFS
+void bfs(int N, int adj_matrix[][N], int S) {
+    bool visited[N];
+    for (int i = 0; i < N; i++)
+        visited[i] = false;
+    visited[S] = true;
+    enqueue(S);
+    printf("BFS Traversal: ");
+    while (front != -1) {
+        int node = dequeue();
+        printf("%d ", node);
+        for (int i = 0; i < N; i++) {
+            if (adj_matrix[node][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                enqueue(i);
+            }
+        }
+    }
+    printf("\n");
+}
+
+// DFS (recursive)
+void dfs_util(int N, int adj_matrix[][N], int node, bool visited[]) {
+    visited[node] = true;
+    printf("%d ", node);
+    for (int i = 0; i < N; i++) {
+        if (adj_matrix[node][i] == 1 && !visited[i]) {
+            dfs_util(N, adj_matrix, i, visited);
+        }
+    }
+}
+
+void dfs(int N, int adj_matrix[][N], int S) {
+    bool visited[N];
+    for (int i = 0; i < N; i++)
+        visited[i] = false;
+    printf("DFS Traversal: ");
+    dfs_util(N, adj_matrix, S, visited);
+    printf("\n");
+}
+
+int main() {
+    int N, S;
+    printf("Enter number of vertices N: ");
+    scanf("%d", &N);
+    int adj_matrix[N][N];
+    printf("Enter adjacency matrix (%dx%d):\n", N, N);
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            scanf("%d", &adj_matrix[i][j]);
+    printf("Enter starting vertex S: ");
+    scanf("%d", &S);
+
+    bfs(N, adj_matrix, S);
+    dfs(N, adj_matrix, S);
+
+    return 0;
+}
